@@ -22,16 +22,16 @@ export async function login(formData: FormData) {
 export async function register(formData: FormData) {
 
     try {
-        const name = formData.get("name")
+        const username = formData.get("username")
         const email = formData.get("email")
         const password = formData.get("password")
+        const role = formData.get("role")
 
 
-        console.log("name", name)
+        console.log("username", username)
         console.log("email", email)
         console.log("password", password)
-
-        
+        console.log("role", role)
 
         // await fetch("")
         
