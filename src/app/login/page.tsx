@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { SubmitButton } from "@/components/submit-button"
 import { login } from "../actions"
 
 export const metadata: Metadata = {
@@ -14,7 +15,7 @@ export const metadata: Metadata = {
 };
 
 
-export default function loginPage() {
+export default async function loginPage() {
   return (
     <div className="h-screen w-full dark:bg-black bg-white  dark:bg-grid-white/[0.2] bg-grid-black/[0.2] relative flex items-center justify-center lg:grid lg:min-h-[600px] lg:grid-cols-1 xl:min-h-[800px]">
       <div className="absolute pointer-events-none inset-0 flex items-center justify-center dark:bg-black bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_70%,black)] sm:[mask-image:radial-gradient(ellipse_at_center,transparent_30%,black)]"></div>
@@ -50,23 +51,23 @@ export default function loginPage() {
                 </div>
                 <Input id="password" type="password" required name="password" />
               </div>
-              <Button type="submit" className="w-full">
-                Login
-              </Button>
-              <Button variant="outline" className="w-full">
-                Login with Google
-              </Button>
-              <Button variant="outline" className="w-full">
-                Login with Github
-              </Button>
-            </div>
-            <div className="mt-4 text-center text-sm">
-              Don&apos;t have an account?{" "}
-              <Link href="/register" className="underline">
-                Sign up
-              </Link>
+              <SubmitButton name="Login" />
             </div>
           </form>
+          <Link href="https://api.freeapi.app/api/v1/users/google">
+            <Button variant="outline" className="w-full">
+              Login with Google
+            </Button>
+          </Link>
+          <Button variant="outline" className="w-full">
+            Login with Github
+          </Button>
+          <div className="mt-4 text-center text-sm">
+            Don&apos;t have an account?{" "}
+            <Link href="/register" className="underline">
+              Sign up
+            </Link>
+          </div>
         </div>
       </div>
       {/* <div className="hidden bg-muted lg:block">

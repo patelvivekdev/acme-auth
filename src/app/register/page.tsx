@@ -6,6 +6,7 @@ import { register } from "../actions"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { SubmitButton } from "@/components/submit-button"
 import {
   Select,
   SelectContent,
@@ -36,7 +37,7 @@ export default function registerPage() {
       <div className="flex items-center justify-center py-12">
         <div className="mx-auto grid w-[350px] gap-6">
           <div className="grid gap-2 text-center">
-            <h1 className="text-3xl font-bold">Register</h1>
+            <h1 className="text-3xl font-bold mt-3">Register</h1>
             <p className="text-balance text-muted-foreground">
               Fill your details below to register to your account
             </p>
@@ -90,23 +91,21 @@ export default function registerPage() {
                   name="password"
                   required />
               </div>
-              <Button type="submit" className="w-full">
-                Register
-              </Button>
-              <Button variant="outline" className="w-full">
-                Register with Google
-              </Button>
-              <Button variant="outline" className="w-full">
-                Register with Github
-              </Button>
-            </div>
-            <div className="mt-4 text-center text-sm">
-              Already have an account?{" "}
-              <Link href="/login" className="underline">
-                Login
-              </Link>
+              <SubmitButton name="register" />
             </div>
           </form>
+          <Button variant="outline" className="w-full">
+            Register with Google
+          </Button>
+          <Button variant="outline" className="w-full">
+            Register with Github
+          </Button>
+          <div className="mt-4 text-center text-sm">
+            Already have an account?{" "}
+            <Link href="/login" className="underline">
+              Login
+            </Link>
+          </div>
         </div>
       </div>
       {/* <div className="hidden bg-muted lg:block">
