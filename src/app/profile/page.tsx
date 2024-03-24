@@ -8,7 +8,7 @@ async function getData() {
   const accessToken = cookieStore.get('accessToken')
   try {
 
-    const res = await fetch('https://api.freeapi.app/api/v1/users/current-user',
+    const res = await fetch('http://localhost:8080/api/v1/users/current-user',
       {
         headers: {
           "Content-Type": "application/json",
@@ -28,11 +28,11 @@ async function getData() {
 }
 
 
-export default async function Page() {
+export default async function profilePage() {
 
   await getData()
 
   return (
-    <div>Proflie Page</div>
+    <div>Profile Page</div>
   )
 }

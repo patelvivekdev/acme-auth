@@ -54,14 +54,16 @@ export default async function loginPage() {
               <SubmitButton name="Login" />
             </div>
           </form>
-          <Link href="https://api.freeapi.app/api/v1/users/google">
+          <Link href="http://localhost:8080/api/v1/users/google">
             <Button variant="outline" className="w-full">
               Login with Google
             </Button>
           </Link>
-          <Button variant="outline" className="w-full">
-            Login with Github
-          </Button>
+          <Link href="http://localhost:8080/api/v1/users/github">
+            <Button variant="outline" className="w-full">
+              Login with Github
+            </Button>
+          </Link>
           <div className="mt-4 text-center text-sm">
             Don&apos;t have an account?{" "}
             <Link href="/register" className="underline">
