@@ -48,7 +48,7 @@ export default function RootLayout({
                 <Profile />
               </header>
               <main className="flex flex-1 flex-col gap-4 lg:gap-6">
-                <div className="w-full dark:bg-black bg-white  dark:bg-grid-white/[0.2] bg-grid-black/[0.2] relative flex items-center justify-center lg:grid lg:grid-cols-1 xl:min-h-[800px]">
+                <div className="h-full w-full dark:bg-black bg-white  dark:bg-grid-white/[0.2] bg-grid-black/[0.2] relative flex items-center justify-center lg:grid lg:grid-cols-1 xl:min-h-[800px]">
                   <div className="absolute pointer-events-none inset-0 flex items-center justify-center dark:bg-black bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_70%,black)] sm:[mask-image:radial-gradient(ellipse_at_center,transparent_30%,black)]"></div>
                   {children}
                 </div>

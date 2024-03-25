@@ -13,7 +13,7 @@ const initialState = {
 };
 
 
-export default async function LoginPage() {
+export default function LoginPage() {
 
   const [state, formAction] = useFormState<any>(login as any, initialState)
 
