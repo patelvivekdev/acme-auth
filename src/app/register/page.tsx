@@ -23,7 +23,7 @@ const initialState = {
   errors: null,
 };
 
-export default function registerPage() {
+export default function RegisterPage() {
 
   const [state, formAction] = useFormState<any>(register as any, initialState)
 
