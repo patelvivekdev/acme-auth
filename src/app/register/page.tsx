@@ -1,34 +1,31 @@
-import Link from "next/link"
-import type { Metadata } from "next";
+"use client"
 
-import { register } from "../actions"
-import { Button } from "@/components/ui/button"
+import Link from "next/link"
+import { useFormState } from 'react-dom';
+
+import { register } from "@/app/actions"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { SubmitButton } from "@/components/submit-button"
 import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectLabel,
+    SelectTrigger,
+    SelectValue,
 } from "@/components/ui/select"
+import { Button } from "@/components/ui/button"
 
-
-export const metadata: Metadata = {
-  title: "Register",
-  description: "Create a new account",
-  keywords: "register, Sign up, freeapi",
+const initialState = {
+  message: '',
+  errors: null,
 };
 
 export default function registerPage() {
 
-  const UserRolesEnum = {
-    ADMIN: "ADMIN",
-    USER: "USER",
-  };
+  const [state, formAction] = useFormState<any>(register as any, initialState)
 
   return (
     <div className="flex items-center justify-center py-12">
@@ -39,57 +36,82 @@ export default function registerPage() {
             Fill your details below to register to your account
           </p>
         </div>
-        <form action={register}>
-          <div className="grid gap-4">
-            <div className="grid gap-2">
-              <div className="flex items-center">
-                <Label htmlFor="username">Username</Label>
-              </div>
-              <Input
-                id="username"
-                type="input"
-                name="username"
-                placeholder="username"
-                required
-              />
+        <form action={formAction}>
+            <div className="grid gap-4">
+                {state?.type === 'error' && (
+                    <p className="text-lg mb-2 bg-green-951 text-red-600 border-2 border-gray-300 rounded-md p-2 my-4">
+                        {state.message}
+                    </p>
+                )}
+                <div className="grid gap-2">
+                    <div className="flex items-center">
+                        <Label htmlFor="username">Username</Label>
+                    </div>
+                    <Input
+                        id="username"
+                        type="input"
+                        name="username"
+                        placeholder="username"
+                        required
+                    />
+                    {state?.errors?.username && (
+                        <span id="username-error" className="text-red-600 text-sm">
+                            {state.errors.username.join(',')}
+                        </span>
+                    )}
+                </div>
+                <div className="grid gap-2">
+                    <Label htmlFor="email">Email</Label>
+                    <Input
+                        id="email"
+                        type="email"
+                        placeholder="m@example.com"
+                        name="email"
+                        required
+                    />
+                    {state?.errors?.email && (
+                        <span id="email-error" className="text-red-600 text-sm">
+                            {state.errors.email.join(',')}
+                        </span>
+                    )}
+                </div>
+                <div className="grid gap-2">
+                    <Label htmlFor="role">Role</Label>
+                    <Select name="role">
+                        <SelectTrigger className="w-[180px]">
+                            <SelectValue placeholder="Select a role" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectGroup>
+                                <SelectLabel>Roles</SelectLabel>
+                                <SelectItem value="ADMIN">Admin</SelectItem>
+                                <SelectItem value="USER">User</SelectItem>
+                            </SelectGroup>
+                        </SelectContent>
+                    </Select>
+                    {state?.errors?.role && (
+                        <span id="role-error" className="text-red-600 text-sm">
+                            {state.errors.role.join(',')}
+                        </span>
+                    )}
+                </div>
+                <div className="grid gap-2">
+                    <div className="flex items-center">
+                        <Label htmlFor="password">Password</Label>
+                    </div>
+                    <Input
+                        id="password"
+                        type="password"
+                        name="password"
+                        required />
+                    {state?.errors?.password && (
+                        <span id="password-error" className="text-red-600 text-sm">
+                            {state.errors.password.join(',')}
+                        </span>
+                    )}
+                </div>
+                <SubmitButton name="register" />
             </div>
-            <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="m@example.com"
-                name="email"
-                required
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="role">Role</Label>
-              <Select name="role">
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Select a role" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectLabel>Roles</SelectLabel>
-                    <SelectItem value="ADMIN">Admin</SelectItem>
-                    <SelectItem value="USER">User</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="grid gap-2">
-              <div className="flex items-center">
-                <Label htmlFor="password">Password</Label>
-              </div>
-              <Input
-                id="password"
-                type="password"
-                name="password"
-                required />
-            </div>
-            <SubmitButton name="register" />
-          </div>
         </form>
         <Button variant="outline" className="w-full">
           Register with Google

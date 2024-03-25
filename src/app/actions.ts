@@ -1,15 +1,41 @@
 'use server'
 
-import {redirect} from 'next/navigation'
-import {cookies} from 'next/headers'
+import { redirect } from 'next/navigation'
+import { cookies } from 'next/headers'
+import { z } from 'zod';
 
-export async function register(formData: FormData) {
+const registerSchema = z.object({
+	username: z.string().min(3, { message: "Must be 3 or more characters long" }),
+	email: z.string().email("Please enter valid message").min(5),
+	password: z.string().min(8, { message: "Must be 8 or more characters long" }),
+	role: z.enum(['ADMIN', 'USER']),
+});
+
+const loginSchema = z.object({
+	email: z.string().email("Please enter valid email"),
+	password: z.string()
+})
+
+
+export async function register(prevState: any, formData: FormData) {
+
+	const validatedFields = registerSchema.safeParse({
+		email: formData.get('email'),
+		username: formData.get('username'),
+		password: formData.get('password'),
+		role: formData.get('role'),
+	})
+
+	// Return early if the form data is invalid
+	if (!validatedFields.success) {
+		return {
+			type: 'error',
+			errors: validatedFields.error.flatten().fieldErrors,
+			message: 'Missing Fields. Failed to register.',
+		};
+	}
+
 	try {
-		const username = formData.get('username')
-		const email = formData.get('email')
-		const password = formData.get('password')
-		const role = formData.get('role')
-
 		const response = await fetch(
 			'https://api.freeapi.app/api/v1/users/register',
 			{
@@ -17,27 +43,44 @@ export async function register(formData: FormData) {
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				body: JSON.stringify({
-					username,
-					email,
-					password,
-					role,
-				}),
+				body: JSON.stringify(validatedFields.data),
 			}
 		)
 
 		const result = await response.json()
 
 		if (result.success === false) {
-			throw new Error('Something went wrong')
+			return {
+				type: 'error',
+				message: result.message
+			}
 		}
-	} catch (error) {
-		console.log('Error', error)
+	} catch (error: any) {
+		console.log('error', error.message)
+		return {
+			type: 'error',
+			message: 'Database Error: Failed to register.',
+		};
 	}
 	redirect('/login')
 }
 
-export async function login(formData: FormData) {
+export async function login(prevState: any, formData: FormData) {
+
+	const validatedFields = loginSchema.safeParse({
+		email: formData.get('email'),
+		password: formData.get('password'),
+	})
+
+	// Return early if the form data is invalid
+	if (!validatedFields.success) {
+		return {
+			type: 'error',
+			errors: validatedFields.error.flatten().fieldErrors,
+			message: 'Missing Fields. Failed to login.',
+		};
+	}
+
 	try {
 		const email = formData.get('email')
 		const password = formData.get('password')
@@ -76,19 +119,27 @@ export async function login(formData: FormData) {
 				secure: true,
 				expires: new Date(Date.now() + oneDay),
 			})
+		} else {
+			return {
+				type: 'error',
+				message: result.message
+			}
 		}
 	} catch (error: any) {
 		console.log('error', error.message)
+		return {
+			type: 'error',
+			message: 'Database Error: Failed to login.',
+		};
 	}
 	redirect('/profile')
 }
 
 export async function logout() {
-	try{
+	try {
 		cookies().delete('accessToken')
 		cookies().delete('refreshToken')
-		return 
-	} catch (error){
+	} catch (error) {
 		console.log("Error", error)
 	}
 }
@@ -97,31 +148,32 @@ export async function logout() {
 export async function getCurrentUser() {
 	const cookieStore = cookies()
 	const accessToken = cookieStore.get('accessToken')
-	
-	try {
-	  const res = await fetch('https://api.freeapi.app/api/v1/users/current-user',
-		{
-		  headers: {
-			"Content-Type": "application/json",
-			"Authorization": `Bearer ${accessToken?.value}`
-		  },
-		}
-	  )
-  
-	  const data : {
-		ststusCdoe:number,
-		data:any,
-		message:string,
-		success:boolean
-	  } = await res.json()
 
-	  return data
-  
+	try {
+		const res = await fetch('https://api.freeapi.app/api/v1/users/current-user',
+			{
+				headers: {
+					"Content-Type": "application/json",
+					"Authorization": `Bearer ${accessToken?.value}`
+				},
+			}
+		)
+
+		const data: {
+			ststusCdoe: number,
+			data: any,
+			message: string,
+			success: boolean
+		} = await res.json()
+
+		return data
+
 	} catch (error) {
-	  console.log(error)
+		console.log("error", error)
+		return error
 	}
-  }
-  
+}
+
 
 export async function forgetPassword(formData: FormData) {
 	try {
@@ -217,6 +269,6 @@ export async function changeAvatar(formData: FormData) {
 	}
 }
 
-export async function verifyEmail(formData: FormData){
-	
+export async function verifyEmail(formData: FormData) {
+
 }

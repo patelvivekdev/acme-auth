@@ -1,20 +1,22 @@
+"use client"
 import Link from "next/link"
-import type { Metadata } from "next";
-
+import { useFormState } from 'react-dom'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { SubmitButton } from "@/components/submit-button"
 import { login } from "../actions"
 
-export const metadata: Metadata = {
-  title: "Login",
-  description: "Login to your acoount",
-  keywords: "login, Sign in, freeapi",
+const initialState = {
+  message: '',
+  errors: null,
 };
 
 
 export default async function loginPage() {
+
+  const [state, formAction] = useFormState<any>(login as any, initialState)
+
   return (
     <div className="flex items-center justify-center py-12">
       <div className="mx-auto grid w-[350px] gap-6">
@@ -24,8 +26,13 @@ export default async function loginPage() {
             Enter your email below to login to your account
           </p>
         </div>
-        <form action={login}>
+        <form action={formAction}>
           <div className="grid gap-4">
+            {state?.type === 'error' && (
+              <p className="text-lg mb-2 bg-green-951 text-red-600 border-2 border-gray-300 rounded-md p-2 my-4">
+                {state.message}
+              </p>
+            )}
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
               <Input
@@ -35,6 +42,11 @@ export default async function loginPage() {
                 name="email"
                 required
               />
+              {state?.errors?.email && (
+                <span id="email-error" className="text-red-600 text-sm">
+                  {state.errors.email.join(',')}
+                </span>
+              )}
             </div>
             <div className="grid gap-2">
               <div className="flex items-center">
@@ -47,6 +59,11 @@ export default async function loginPage() {
                 </Link>
               </div>
               <Input id="password" type="password" required name="password" />
+              {state?.errors?.password && (
+                <span id="password-error" className="text-red-600 text-sm">
+                  {state.errors.password.join(',')}
+                </span>
+              )}
             </div>
             <SubmitButton name="Login" />
           </div>
