@@ -27,7 +27,7 @@ import { getCurrentUser } from "@/app/actions"
 
 import { useCurrentUserContext } from "@/components/UserContext"
 
-export default function profilePage() {
+export default function ProfilePage() {
 
   const { currentUser, setCurrentUser } = useCurrentUserContext()
 
