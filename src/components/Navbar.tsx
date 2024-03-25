@@ -31,7 +31,7 @@ const Navbar = () => {
         <nav className="grid items-start px-2 text-sm font-medium lg:px-4 lg:mt-2">
             <Link
                 href="/"
-                className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary ${pathname === '/home' ? 'bg-muted text-primary' : 'text-muted-foreground'} `}
+                className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary ${pathname === '/' ? 'bg-muted text-primary' : 'text-muted-foreground'} `}
             >
                 <Home className="h-4 w-4" />
                 Home
@@ -46,15 +46,10 @@ const Navbar = () => {
                         <CircleUserRound className="h-4 w-4" />
                         Profile
                     </Link>
-                    <Link
-                        href="/logout"
-                        className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary ${pathname === '/logout' ? 'bg-muted text-primary' : 'text-muted-foreground'} `}
-                    >
+                    <button onClick={logoutHandler} className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary ${pathname === '/logout' ? 'bg-muted text-primary' : 'text-muted-foreground'} `}>
                         <LogOut className="h-4 w-4" />
-                        <button onClick={logoutHandler}>
-                            Logout
-                        </button>
-                    </Link>
+                        Logout
+                    </button>
                 </>
             )}
             {!currentUser && (

@@ -1,9 +1,10 @@
 'use client'
-
+import { useRouter } from 'next/navigation'
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
-import { Button } from "@/components/ui/button"
+import { LogOut } from "lucide-react"
 
+import { Button } from "@/components/ui/button"
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -14,10 +15,18 @@ import {
 } from "@/components/ui/dropdown-menu"
 
 import { useCurrentUserContext } from "@/components/UserContext"
+import { logout } from "@/app/actions"
 
 
 const Profile = () => {
-    const { currentUser } = useCurrentUserContext()
+    const { currentUser, setCurrentUser } = useCurrentUserContext()
+    const router = useRouter()
+
+    const logoutHandler = async () => {
+        await logout()
+        setCurrentUser(null)
+        router.push('/')
+    }
 
     return (
         <>
@@ -34,9 +43,14 @@ const Profile = () => {
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>{currentUser?.username} `&apos;`  Account</DropdownMenuLabel>
+                            <DropdownMenuLabel>My  Account</DropdownMenuLabel>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem>Logout</DropdownMenuItem>
+                            <DropdownMenuItem>
+                                <button onClick={logoutHandler} className='flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary text-muted-foreground'>
+                                    <LogOut className="h-4 w-4" />
+                                    Logout
+                                </button>
+                            </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
                 ) : null

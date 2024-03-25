@@ -27,7 +27,6 @@ export async function register(formData: FormData) {
 		)
 
 		const result = await response.json()
-		console.log(result)
 
 		if (result.success === false) {
 			throw new Error('Something went wrong')
@@ -58,7 +57,6 @@ export async function login(formData: FormData) {
 		)
 
 		const result = await response.json()
-		console.log(result)
 
 		// // Check if success is true, if true set cookie and redirect to /
 		if (result.success) {
@@ -86,8 +84,13 @@ export async function login(formData: FormData) {
 }
 
 export async function logout() {
-	cookies().delete('accessToken')
-	cookies().delete('refreshToken')
+	try{
+		cookies().delete('accessToken')
+		cookies().delete('refreshToken')
+		return 
+	} catch (error){
+		console.log("Error", error)
+	}
 }
 
 // Fetch data from API
@@ -112,8 +115,6 @@ export async function getCurrentUser() {
 		success:boolean
 	  } = await res.json()
 
-	  console.log(data)
-	  
 	  return data
   
 	} catch (error) {
@@ -140,7 +141,6 @@ export async function forgetPassword(formData: FormData) {
 		)
 
 		const result = await response.json()
-		console.log(result)
 	} catch (error) {
 		console.log('error', error)
 	}
@@ -163,7 +163,6 @@ export async function resendEmailVerification() {
 			)
 
 			const result = await response.json()
-			console.log(result)
 		} else {
 			throw new Error('Invalid token! Plasea login again')
 		}
@@ -192,7 +191,6 @@ export async function changePassword(formData: FormData) {
 		)
 
 		const result = await response.json()
-		console.log(result)
 	} catch (error) {
 		console.log('Error', error)
 	}
@@ -214,7 +212,6 @@ export async function changeAvatar(formData: FormData) {
 		)
 
 		const result = await response.json()
-		console.log(result)
 	} catch (error) {
 		console.log('Error', error)
 	}
