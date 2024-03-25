@@ -32,13 +32,13 @@ export default function ProfilePage() {
   const { currentUser, setCurrentUser } = useCurrentUserContext()
 
   useEffect(() => {
-    const currentUser = async () => {
+    const fetchUser = async () => {
       const updatedViews = await getCurrentUser()
       console.log(updatedViews)
       setCurrentUser(updatedViews?.data)
     }
-    currentUser()
-  }, [])
+    fetchUser()
+  }, [setCurrentUser])
 
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">

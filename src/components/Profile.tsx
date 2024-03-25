@@ -34,7 +34,7 @@ const Profile = () => {
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>{currentUser?.username}'s  Account</DropdownMenuLabel>
+                            <DropdownMenuLabel>{currentUser?.username} `&apos;`  Account</DropdownMenuLabel>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem>Logout</DropdownMenuItem>
                         </DropdownMenuContent>

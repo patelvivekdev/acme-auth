@@ -36,19 +36,22 @@ export default function RootLayout({
               </div>
               <div className="flex h-full max-h-screen flex-col gap-2">
                 <div className="flex-1">
-                  <Navbar/>
+                  <Navbar />
                 </div>
               </div>
             </div>
             <div className="flex flex-col">
               <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
-                <MobileNav/>
+                <MobileNav />
                 <div className="w-full flex-1">
                 </div>
-                <Profile/>
+                <Profile />
               </header>
               <main className="flex flex-1 flex-col gap-4 lg:gap-6">
-                {children}
+                <div className="h-screen w-full dark:bg-black bg-white  dark:bg-grid-white/[0.2] bg-grid-black/[0.2] relative flex items-center justify-center lg:grid lg:min-h-[600px] lg:grid-cols-1 xl:min-h-[800px]">
+                  <div className="absolute pointer-events-none inset-0 flex items-center justify-center dark:bg-black bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_70%,black)] sm:[mask-image:radial-gradient(ellipse_at_center,transparent_30%,black)]"></div>
+                  {children}
+                </div>
               </main>
             </div>
           </div>
