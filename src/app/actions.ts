@@ -11,7 +11,7 @@ export async function register(formData: FormData) {
 		const role = formData.get('role')
 
 		const response = await fetch(
-			'http://localhost:8080/api/v1/users/register',
+			'https://api.freeapi.app/api/v1/users/register',
 			{
 				method: 'POST',
 				headers: {
@@ -44,7 +44,7 @@ export async function login(formData: FormData) {
 		const password = formData.get('password')
 
 		const response = await fetch(
-			'http://localhost:8080/api/v1/users/login',
+			'https://api.freeapi.app/api/v1/users/login',
 			{
 				method: 'POST',
 				headers: {
@@ -82,21 +82,52 @@ export async function login(formData: FormData) {
 	} catch (error: any) {
 		console.log('error', error.message)
 	}
-	redirect('/')
+	redirect('/profile')
 }
 
 export async function logout() {
 	cookies().delete('accessToken')
 	cookies().delete('refreshToken')
-	redirect('/')
 }
+
+// Fetch data from API
+export async function getCurrentUser() {
+	const cookieStore = cookies()
+	const accessToken = cookieStore.get('accessToken')
+	
+	try {
+	  const res = await fetch('https://api.freeapi.app/api/v1/users/current-user',
+		{
+		  headers: {
+			"Content-Type": "application/json",
+			"Authorization": `Bearer ${accessToken?.value}`
+		  },
+		}
+	  )
+  
+	  const data : {
+		ststusCdoe:number,
+		data:any,
+		message:string,
+		success:boolean
+	  } = await res.json()
+
+	  console.log(data)
+	  
+	  return data
+  
+	} catch (error) {
+	  console.log(error)
+	}
+  }
+  
 
 export async function forgetPassword(formData: FormData) {
 	try {
 		const email = formData.get('email')
 
 		const response = await fetch(
-			'http://localhost:8080/api/v1/users/forgot-password',
+			'https://api.freeapi.app/api/v1/users/forgot-password',
 			{
 				method: 'POST',
 				headers: {
@@ -122,7 +153,7 @@ export async function resendEmailVerification() {
 	try {
 		if (accessToken) {
 			const response = await fetch(
-				'http://localhost:8080/api/v1/users/resend-email-verification',
+				'https://api.freeapi.app/api/v1/users/resend-email-verification',
 				{
 					method: 'POST',
 					headers: {
@@ -147,7 +178,7 @@ export async function changePassword(formData: FormData) {
 		const newPassword = formData.get('newPassword')
 
 		const response = await fetch(
-			'http://localhost:8080/api/v1/users/change-password',
+			'https://api.freeapi.app/api/v1/users/change-password',
 			{
 				method: 'POST',
 				headers: {
@@ -172,7 +203,7 @@ export async function changeAvatar(formData: FormData) {
 		const avatar = formData.get('file')
 
 		const response = await fetch(
-			'http://localhost:8080/api/v1/users/avatar',
+			'https://api.freeapi.app/api/v1/users/avatar',
 			{
 				method: 'POST',
 				headers: {
@@ -187,4 +218,8 @@ export async function changeAvatar(formData: FormData) {
 	} catch (error) {
 		console.log('Error', error)
 	}
+}
+
+export async function verifyEmail(formData: FormData){
+	
 }

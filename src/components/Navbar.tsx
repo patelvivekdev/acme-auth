@@ -2,37 +2,88 @@
 
 import Link from "next/link";
 import { usePathname } from 'next/navigation'
+import { useRouter } from 'next/navigation'
+import {
+    Home,
+    CircleUserRound,
+    UserPlus,
+    LogIn,
+    LogOut,
+    InfoIcon
+} from "lucide-react"
+
+import { useCurrentUserContext } from "@/components/UserContext"
+import { logout } from "@/app/actions"
+
 
 const Navbar = () => {
     const pathname = usePathname()
+    const router = useRouter()
+    const { currentUser, setCurrentUser } = useCurrentUserContext()
 
-    const navItems: { name: string, path: string }[] = [
-        { name: 'Home', path: '/' },
-        { name: 'Login', path: '/login' },
-        { name: 'Register', path: '/register' },
-    ]
+    const logoutHandler = async () => {
+        await logout()
+        setCurrentUser(null)
+        router.push('/')
+    }
 
     return (
-        <div
-            className=
-            "flex max-w-fit  fixed top-10 inset-x-0 mx-auto border border-transparent dark:border-white/[0.2] rounded-full dark:bg-black bg-white z-[5000] pr-8 pl-8 py-2  items-center justify-center space-x-4"
-        >
-            {navItems.map((item) => (
-                <Link
-                    href={item.path}
-                    key={item.name}
-                    className=
-                    "relative dark:text-neutral-50 items-center flex space-x-1 text-neutral-600 dark:hover:text-neutral-300 hover:text-neutral-500"
-                >
-                    <span className="block sm:hidden">{item.name}</span>
-                    <span className="hidden sm:block text-sm">{item.name}</span>
-                    {pathname === item.path && (
-                        <span className="absolute inset-x-0 w-1/2 mx-auto -bottom-px bg-gradient-to-r from-transparent via-sky-600 to-transparent  h-px" />
-                    )}
-                </Link>
-            ))}
-        </div>
-    )
-}
+        <nav className="grid items-start px-2 text-sm font-medium lg:px-4 lg:mt-2">
+            <Link
+                href="/"
+                className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary ${pathname === '/home' ? 'bg-muted text-primary' : 'text-muted-foreground'} `}
+            >
+                <Home className="h-4 w-4" />
+                Home
+            </Link>
 
-export default Navbar
+            {currentUser && (
+                <>
+                    <Link
+                        href="/profile"
+                        className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary ${pathname === '/profile' ? 'bg-muted text-primary' : 'text-muted-foreground'} `}
+                    >
+                        <CircleUserRound className="h-4 w-4" />
+                        Profile
+                    </Link>
+                    <Link
+                        href="/logout"
+                        className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary ${pathname === '/logout' ? 'bg-muted text-primary' : 'text-muted-foreground'} `}
+                    >
+                        <LogOut className="h-4 w-4" />
+                        <button onClick={logoutHandler}>
+                            Logout
+                        </button>
+                    </Link>
+                </>
+            )}
+            {!currentUser && (
+                <>
+                    <Link
+                        href="/login"
+                        className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary ${pathname === '/login' ? 'bg-muted text-primary' : 'text-muted-foreground'} `}
+                    >
+                        <LogIn className="h-4 w-4" />
+                        Login
+                    </Link>
+                    <Link
+                        href="/register"
+                        className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary ${pathname === '/register' ? 'bg-muted text-primary' : 'text-muted-foreground'} `}
+                    >
+                        <UserPlus className="h-4 w-4" />
+                        Register
+                    </Link>
+                    <Link
+                        href="/about"
+                        className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary ${pathname === '/about' ? 'bg-muted text-primary' : 'text-muted-foreground'} `}
+                    >
+                        <InfoIcon className="h-4 w-4" />
+                        Products
+                    </Link>
+                </>
+            )}
+        </nav>
+    );
+};
+
+export default Navbar;
