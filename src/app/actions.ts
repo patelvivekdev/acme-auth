@@ -170,7 +170,6 @@ export async function getCurrentUser() {
 
 	} catch (error) {
 		console.log("error", error)
-		return error
 	}
 }
 
