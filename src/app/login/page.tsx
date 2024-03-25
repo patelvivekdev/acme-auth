@@ -18,7 +18,7 @@ export default function LoginPage() {
   const [state, formAction] = useFormState<any>(login as any, initialState)
 
   return (
-    <div className="flex items-center justify-center py-12">
+    <div className="flex min-h-screen items-center justify-center">
       <div className="mx-auto grid w-[350px] gap-6">
         <div className="grid gap-2 text-center">
           <h1 className="text-3xl font-bold">Login</h1>
