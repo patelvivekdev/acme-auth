@@ -10,7 +10,7 @@ const refreshToken = cookieStore.get("refreshToken");
 
 // define responce type
 type Response = {
-  ststusCdoe: number;
+  statusCode: number;
   data: any;
   message: string;
   success: boolean;
@@ -265,12 +265,19 @@ export async function changePassword(prevState: any, formData: FormData) {
 
     const result: Response = await response.json();
     console.log("result", result);
-	if(result.success===false){
-		return {
-			type:"error",
-			message:result.message
-		}
-	}
+    if (result.statusCode === 401) {
+      return {
+        type: "redirect",
+        message: "Please login to perform this action",
+      };
+    }
+
+    if (result.success === false) {
+      return {
+        type: "error",
+        message: result.message,
+      };
+    }
 
     return result;
   } catch (error) {

@@ -1,6 +1,11 @@
 "use client";
 import Link from "next/link";
+import { useEffect } from "react";
+
+import { useRouter } from "next/navigation";
 import { useFormState } from "react-dom";
+import { toast } from "react-hot-toast";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -17,6 +22,14 @@ const ChnagePasswordPage = () => {
     changePassword as any,
     initialState
   );
+  const router = useRouter();
+
+  useEffect(() => {
+    if (state.type === "redirect") {
+      toast.error(state.message);
+      router.push("/login");
+    }
+  }, [state]);
 
   return (
     <div className="flex min-h-screen items-center justify-center">
