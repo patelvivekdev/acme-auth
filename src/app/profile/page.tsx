@@ -3,8 +3,10 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
+import Link from "next/link";
 
-import { getCurrentUser } from "@/app/actions";
+import { Button } from "@/components/ui/button";
+import { getCurrentUser, resendEmailVerification } from "@/app/actions";
 import { useCurrentUserContext } from "@/components/UserContext";
 
 function Loading() {
@@ -36,14 +38,33 @@ export default function ProfilePage() {
   if (!currentUser) {
     return <Loading />;
   }
-  console.log(currentUser);
+
+  const sendEmailHandler = async () => {
+    const result = await resendEmailVerification();
+    if (result.type === "error") {
+      toast.error(result.message!);
+    } else {
+      toast.success("Verification email sent!");
+    }
+  };
 
   return (
     <div className="max-w-md mx-auto mt-8 p-8 bg-white rounded-lg shadow-lg">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-xl font-semibold text-gray-800">User Profile</h2>
       </div>
-      <div className="flex items-center mb-4">
+      {/* display message that user have to verify email address */}
+      <p className="text-gray-900">
+        {currentUser.isEmailVerified
+          ? "Email verified"
+          : "Please verify your email address"}
+      </p>
+      {/* Add link to resend email */}
+      <Button variant="outline" className="w-full" onClick={sendEmailHandler}>
+        Resend Verification Email
+      </Button>
+
+      <div className="flex items-center m-4">
         <img
           src={currentUser?.avatar?.url}
           alt="Avatar"
@@ -56,6 +77,11 @@ export default function ProfilePage() {
           <p className="text-sm text-gray-600">{currentUser?.email}</p>
         </div>
       </div>
+      <Link href="/change-password">
+        <Button variant="outline" className="w-full">
+          Change Password
+        </Button>
+      </Link>
     </div>
   );
 }

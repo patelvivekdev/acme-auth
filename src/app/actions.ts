@@ -230,28 +230,56 @@ export async function forgetPassword(formData: FormData) {
 
 export async function resendEmailVerification() {
   const cookieStore = cookies();
-  const accessToken = cookieStore.get("accessToken")?.value;
+  const accessToken = cookieStore.get("accessToken");
+
+  if (!accessToken?.value) {
+    return {
+      type: "redirect",
+      message: "Token expried! Please login again",
+    };
+  }
 
   try {
-    if (accessToken) {
-      const response = await fetch(
-        "https://api.freeapi.app/api/v1/users/resend-email-verification",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+    const response = await fetch(
+      "https://api.freeapi.app/api/v1/users/resend-email-verification",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken?.value}`,
+        },
+      }
+    );
 
-      const result: Response = await response.json();
+    const result: Response = await response.json();
+    console.log(result)
 
-      return result;
-    } else {
-      throw new Error("Invalid token! Plasea login again");
+    // Invalid Token
+    if (result.statusCode === 401) {
+      return {
+        type: "redirect",
+        message: "Please login to perform this action",
+      };
     }
+
+    if (result.success === false) {
+      return {
+        type: "error",
+        message: result.message,
+      };
+    }
+
+    return {
+      type: "success",
+      message: result.message,
+      data: result.data,
+    };
   } catch (error) {
     console.log("Error", error);
+    return {
+      type: "error",
+      message: "Database Error: Failed to send email.",
+    };
   }
 }
 
@@ -323,7 +351,7 @@ export async function changePassword(prevState: any, formData: FormData) {
     console.log("Error", error);
     return {
       type: "error",
-      message: "Database Error: Failed to login.",
+      message: "Database Error: Failed to change password.",
     };
   }
   redirect("/profile");
