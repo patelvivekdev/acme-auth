@@ -55,6 +55,11 @@ export async function register(prevState: any, formData: FormData) {
         type: "error",
         message: result.message,
       };
+    } else {
+      return {
+        type: "success",
+        message: result.message,
+      };
     }
   } catch (error: any) {
     console.log("Error", error.message);
@@ -63,7 +68,6 @@ export async function register(prevState: any, formData: FormData) {
       message: "Database Error: Failed to register.",
     };
   }
-  redirect("/login");
 }
 
 const loginSchema = z.object({
@@ -115,6 +119,11 @@ export async function login(prevState: any, formData: FormData) {
         secure: true,
         expires: new Date(Date.now() + oneDay),
       });
+      return {
+        type: "success",
+        message: result.message,
+        data: result.data,
+      };
     } else {
       return {
         type: "error",
@@ -128,7 +137,6 @@ export async function login(prevState: any, formData: FormData) {
       message: "Database Error: Failed to login.",
     };
   }
-  redirect("/profile");
 }
 
 export async function logout() {

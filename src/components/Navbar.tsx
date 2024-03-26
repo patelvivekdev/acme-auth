@@ -11,6 +11,7 @@ import {
   LogOut,
   InfoIcon,
 } from "lucide-react";
+import { toast } from "react-hot-toast";
 
 import { useCurrentUserContext } from "@/components/UserContext";
 import { logout } from "@/app/actions";
@@ -22,7 +23,9 @@ const Navbar = () => {
 
   const logoutHandler = async () => {
     await logout();
+
     setCurrentUser(null);
+    toast.success("Logout successful");
     router.push("/");
   };
 
@@ -97,7 +100,7 @@ const Navbar = () => {
             } `}
           >
             <InfoIcon className="h-4 w-4" />
-            Products
+            About
           </Link>
         </>
       )}

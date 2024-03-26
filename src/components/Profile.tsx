@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
+import { toast } from "react-hot-toast";
 import { LogOut } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -18,12 +18,14 @@ import { useCurrentUserContext } from "@/components/UserContext";
 import { logout } from "@/app/actions";
 
 const Profile = () => {
-  const { currentUser, setCurrentUser } = useCurrentUserContext();
   const router = useRouter();
+  const { currentUser, setCurrentUser } = useCurrentUserContext();
 
   const logoutHandler = async () => {
     await logout();
+
     setCurrentUser(null);
+    toast.success("Logout successful");
     router.push("/");
   };
 

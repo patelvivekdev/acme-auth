@@ -2,8 +2,10 @@
 
 import Link from "next/link";
 import { useFormState } from "react-dom";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "react-hot-toast";
 
-import { register } from "@/app/actions";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { SubmitButton } from "@/components/submit-button";
@@ -18,13 +20,23 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 
+import { register } from "@/app/actions";
+
 const initialState = {
   message: "",
   errors: null,
 };
 
 export default function RegisterPage() {
+  const router = useRouter();
   const [state, formAction] = useFormState<any>(register as any, initialState);
+
+  useEffect(() => {
+    if (state.type === "success") {
+      toast.success(state.message);
+      router.push("/login");
+    }
+  }, [state]);
 
   return (
     <div className="flex items-center justify-center min-h-screen ">

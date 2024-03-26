@@ -2,16 +2,37 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 
-import { Home, Menu, UserPlus, LogIn, LogOut, Info } from "lucide-react";
+import {
+  Home,
+  Menu,
+  CircleUserRound,
+  UserPlus,
+  LogIn,
+  LogOut,
+  Info,
+} from "lucide-react";
+import { toast } from "react-hot-toast";
 
-import { useCurrentUserContext } from "@/components/UserContext";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
+import { useCurrentUserContext } from "@/components/UserContext";
+import { logout } from "@/app/actions";
+
 const MobileNav = () => {
   const pathname = usePathname();
-  const { currentUser } = useCurrentUserContext();
+  const router = useRouter();
+  const { currentUser, setCurrentUser } = useCurrentUserContext();
+
+  const logoutHandler = async () => {
+    await logout();
+
+    setCurrentUser(null);
+    toast.success("Logout successful");
+    router.push("/");
+  };
 
   return (
     <Sheet>
@@ -29,6 +50,17 @@ const MobileNav = () => {
           >
             <span className="">Acme Auth</span>
           </Link>
+          <Link
+            href="/"
+            className={`mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 hover:text-foreground ${
+              pathname === "/"
+                ? "bg-muted text-primary"
+                : "text-muted-foreground"
+            } `}
+          >
+            <Home className="h-5 w-5" />
+            Home
+          </Link>
           {currentUser && (
             <>
               <Link
@@ -39,20 +71,20 @@ const MobileNav = () => {
                     : "text-muted-foreground"
                 } `}
               >
-                <Home className="h-5 w-5" />
+                <CircleUserRound className="h-4 w-4" />
                 Profile
               </Link>
-              <Link
-                href="/logout"
-                className={`mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 hover:text-foreground ${
+              <button
+                onClick={logoutHandler}
+                className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary ${
                   pathname === "/logout"
                     ? "bg-muted text-primary"
                     : "text-muted-foreground"
                 } `}
               >
-                <LogOut className="h-5 w-5" />
+                <LogOut className="h-4 w-4" />
                 Logout
-              </Link>
+              </button>
             </>
           )}
           {!currentUser && (

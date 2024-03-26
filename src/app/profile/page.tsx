@@ -17,6 +17,9 @@ export default function ProfilePage() {
 
   useEffect(() => {
     const fetchUser = async () => {
+      if (currentUser) {
+        return;
+      }
       const result = await getCurrentUser();
       if (result.type === "error") {
         toast.error(result.message!);
@@ -33,6 +36,7 @@ export default function ProfilePage() {
   if (!currentUser) {
     return <Loading />;
   }
+  console.log(currentUser);
 
   return (
     <div className="max-w-md mx-auto mt-8 p-8 bg-white rounded-lg shadow-lg">

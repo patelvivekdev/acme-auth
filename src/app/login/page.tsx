@@ -1,11 +1,18 @@
 "use client";
 import Link from "next/link";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "react-hot-toast";
 import { useFormState } from "react-dom";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { SubmitButton } from "@/components/submit-button";
-import { login } from "../actions";
+
+import { login } from "@/app/actions";
+
+import { useCurrentUserContext } from "@/components/UserContext";
 
 const initialState = {
   message: "",
@@ -13,7 +20,17 @@ const initialState = {
 };
 
 export default function LoginPage() {
+  const router = useRouter();
+  const { currentUser, setCurrentUser } = useCurrentUserContext();
   const [state, formAction] = useFormState<any>(login as any, initialState);
+
+  useEffect(() => {
+    if (state.type === "success") {
+      toast.success(state.message);
+      setCurrentUser(state.data.user);
+      router.push("/profile");
+    }
+  }, [state]);
 
   return (
     <div className="flex min-h-screen items-center justify-center">
