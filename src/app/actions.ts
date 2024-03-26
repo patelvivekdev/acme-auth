@@ -4,10 +4,6 @@ import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { z } from "zod";
 
-const cookieStore = cookies();
-const accessToken = cookieStore.get("accessToken");
-const refreshToken = cookieStore.get("refreshToken");
-
 // define responce type
 type Response = {
   statusCode: number;
@@ -146,6 +142,17 @@ export async function logout() {
 
 // Fetch data from API
 export async function getCurrentUser() {
+  const cookieStore = cookies();
+  const accessToken = cookieStore.get("accessToken");
+  const refreshToken = cookieStore.get("refreshToken");
+
+  if (!accessToken?.value) {
+    return {
+      type: "redirect",
+      message: "Token expried! Please login again",
+    };
+  }
+
   try {
     const response = await fetch(
       "https://api.freeapi.app/api/v1/users/current-user",
@@ -159,9 +166,32 @@ export async function getCurrentUser() {
 
     const result: Response = await response.json();
 
-    return result;
+    // Invalid Token
+    if (result.statusCode === 401) {
+      return {
+        type: "redirect",
+        message: "Please login to perform this action",
+      };
+    }
+
+    if (result.success === false) {
+      return {
+        type: "error",
+        message: result.message,
+      };
+    }
+
+    return {
+      type: "success",
+      message: result.message,
+      data: result.data,
+    };
   } catch (error) {
     console.log("error", error);
+    return {
+      type: "error",
+      message: "Database Error: Failed to login.",
+    };
   }
 }
 
@@ -228,6 +258,10 @@ const changePasswordSchema = z.object({
 });
 
 export async function changePassword(prevState: any, formData: FormData) {
+  const cookieStore = cookies();
+  const accessToken = cookieStore.get("accessToken");
+  const refreshToken = cookieStore.get("refreshToken");
+
   const validatedFields = changePasswordSchema.safeParse({
     oldPassword: formData.get("oldPassword"),
     newPassword: formData.get("newPassword"),
@@ -264,7 +298,6 @@ export async function changePassword(prevState: any, formData: FormData) {
     );
 
     const result: Response = await response.json();
-    console.log("result", result);
     if (result.statusCode === 401) {
       return {
         type: "redirect",
@@ -278,11 +311,14 @@ export async function changePassword(prevState: any, formData: FormData) {
         message: result.message,
       };
     }
-
-    return result;
   } catch (error) {
     console.log("Error", error);
+    return {
+      type: "error",
+      message: "Database Error: Failed to login.",
+    };
   }
+  redirect("/profile");
 }
 
 export async function changeAvatar(formData: FormData) {

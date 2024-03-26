@@ -1,48 +1,43 @@
 "use client";
 
-import { useEffect, useContext } from "react";
-import { getCurrentUser } from "@/app/actions";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "react-hot-toast";
 
+import { getCurrentUser } from "@/app/actions";
 import { useCurrentUserContext } from "@/components/UserContext";
+
+function Loading() {
+  return <h2 className="text-center">🌀 Loading...</h2>;
+}
 
 export default function ProfilePage() {
   const { currentUser, setCurrentUser } = useCurrentUserContext();
+  const router = useRouter();
 
   useEffect(() => {
     const fetchUser = async () => {
-      const updatedViews = await getCurrentUser();
-      console.log(updatedViews);
-      setCurrentUser(updatedViews?.data);
+      const result = await getCurrentUser();
+      if (result.type === "error") {
+        toast.error(result.message!);
+      } else if (result.type === "redirect") {
+        toast.error(result.message);
+        router.push("/login");
+      } else {
+        setCurrentUser(result?.data);
+      }
     };
     fetchUser();
   }, [setCurrentUser]);
 
-  const handleAvatarChange = () => {
-    // Add functionality for avatar change here
-  };
-
-  const handlePasswordChange = () => {
-    // Add functionality for password change here
-  };
+  if (!currentUser) {
+    return <Loading />;
+  }
 
   return (
     <div className="max-w-md mx-auto mt-8 p-8 bg-white rounded-lg shadow-lg">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-xl font-semibold text-gray-800">User Profile</h2>
-        <div>
-          <button
-            onClick={handleAvatarChange}
-            className="bg-blue-500 text-white px-4 py-2 rounded-md mr-2 focus:outline-none hover:bg-blue-600"
-          >
-            Change Avatar
-          </button>
-          <button
-            onClick={handlePasswordChange}
-            className="bg-gray-500 text-white px-4 py-2 rounded-md focus:outline-none hover:bg-gray-600"
-          >
-            Change Password
-          </button>
-        </div>
       </div>
       <div className="flex items-center mb-4">
         <img
