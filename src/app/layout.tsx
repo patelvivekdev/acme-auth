@@ -1,14 +1,13 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Link from "next/link"
+import Link from "next/link";
 
 import { UserProvider } from "@/components/UserContext";
 
 import Navbar from "@/components/Navbar";
-import MobileNav from "@/components/MobileNav"
-import Profile from "@/components/Profile"
-
+import MobileNav from "@/components/MobileNav";
+import Profile from "@/components/Profile";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -30,7 +29,10 @@ export default function RootLayout({
           <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
             <div className="hidden border-r bg-muted/40 md:block">
               <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
-                <Link href="/" className="flex items-center gap-2 font-semibold">
+                <Link
+                  href="/"
+                  className="flex items-center gap-2 font-semibold"
+                >
                   <span className="">Acme Inc</span>
                 </Link>
               </div>
@@ -43,8 +45,7 @@ export default function RootLayout({
             <div className="flex flex-col">
               <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
                 <MobileNav />
-                <div className="w-full flex-1">
-                </div>
+                <div className="w-full flex-1"></div>
                 <Profile />
               </header>
               <main className="flex flex-1 flex-col gap-4 lg:gap-6">
@@ -57,6 +58,6 @@ export default function RootLayout({
           </div>
         </UserProvider>
       </body>
-    </html >
+    </html>
   );
 }

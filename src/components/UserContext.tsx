@@ -1,27 +1,24 @@
-'use client'
+"use client";
 
-import { createContext, useContext , useState } from 'react';
+import { createContext, useContext, useState } from "react";
 
 const CurrentUserContext = createContext<any>(null);
 
-export function UserProvider({
-    children,
-}: {
-    children: React.ReactNode
-}) {
+export function UserProvider({ children }: { children: React.ReactNode }) {
+  const [currentUser, setCurrentUser] = useState(null);
 
-    const [currentUser, setCurrentUser] = useState(null);
-
-    return <CurrentUserContext.Provider
-        value={{
-            currentUser,
-            setCurrentUser
-        }}
+  return (
+    <CurrentUserContext.Provider
+      value={{
+        currentUser,
+        setCurrentUser,
+      }}
     >
-        {children}
+      {children}
     </CurrentUserContext.Provider>
+  );
 }
 
 export function useCurrentUserContext() {
-    return useContext(CurrentUserContext);
-  }
+  return useContext(CurrentUserContext);
+}

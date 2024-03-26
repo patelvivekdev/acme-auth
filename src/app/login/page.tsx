@@ -1,21 +1,19 @@
-"use client"
-import Link from "next/link"
-import { useFormState } from 'react-dom'
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { SubmitButton } from "@/components/submit-button"
-import { login } from "../actions"
+"use client";
+import Link from "next/link";
+import { useFormState } from "react-dom";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { SubmitButton } from "@/components/submit-button";
+import { login } from "../actions";
 
 const initialState = {
-  message: '',
+  message: "",
   errors: null,
 };
 
-
 export default function LoginPage() {
-
-  const [state, formAction] = useFormState<any>(login as any, initialState)
+  const [state, formAction] = useFormState<any>(login as any, initialState);
 
   return (
     <div className="flex min-h-screen items-center justify-center">
@@ -28,7 +26,7 @@ export default function LoginPage() {
         </div>
         <form action={formAction}>
           <div className="grid gap-4">
-            {state?.type === 'error' && (
+            {state?.type === "error" && (
               <p className="text-lg mb-2 bg-green-951 text-red-600 border-2 border-gray-300 rounded-md p-2 my-4">
                 {state.message}
               </p>
@@ -44,7 +42,7 @@ export default function LoginPage() {
               />
               {state?.errors?.email && (
                 <span id="email-error" className="text-red-600 text-sm">
-                  {state.errors.email.join(',')}
+                  {state.errors.email.join(",")}
                 </span>
               )}
             </div>
@@ -61,7 +59,7 @@ export default function LoginPage() {
               <Input id="password" type="password" required name="password" />
               {state?.errors?.password && (
                 <span id="password-error" className="text-red-600 text-sm">
-                  {state.errors.password.join(',')}
+                  {state.errors.password.join(",")}
                 </span>
               )}
             </div>
@@ -86,5 +84,5 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }
