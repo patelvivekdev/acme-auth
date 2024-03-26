@@ -77,7 +77,7 @@ export default function ProfilePage() {
           <p className="text-sm text-gray-600">{currentUser?.email}</p>
         </div>
       </div>
-      <Link href="/change-password">
+      <Link href="/profile/change-password">
         <Button variant="outline" className="w-full">
           Change Password
         </Button>
