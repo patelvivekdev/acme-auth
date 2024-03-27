@@ -357,27 +357,67 @@ export async function changePassword(prevState: any, formData: FormData) {
   redirect("/profile");
 }
 
-export async function changeAvatar(formData: FormData) {
-  try {
-    const avatar = formData.get("file");
+export async function changeAvatar(prevState: any, formData: FormData) {
+  const avatar = formData.get("avatar");
+  const cookieStore = cookies();
+  const accessToken = cookieStore.get("accessToken");
+  const refreshToken = cookieStore.get("refreshToken");
 
+  if (!accessToken?.value) {
+    return {
+      type: "redirect",
+      message: "Token expried! Please login again",
+    };
+  }
+
+  if (!avatar) {
+    return {
+      type: "error",
+      message: "Please select an avatar",
+    };
+  }
+  console.log("avatar", avatar)
+
+  try {
     const response = await fetch(
       "https://api.freeapi.app/api/v1/users/avatar",
       {
-        method: "POST",
+        method: "PATCH",
         headers: {
-          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${accessToken?.value}`,
         },
-        body: avatar,
+        body: formData
       }
     );
 
-    const result: Response = await response.json();
+    const result = await response.json();
+    // Invalid Token
+    if (result.statusCode === 401) {
+      return {
+        type: "redirect",
+        message: "Please login to perform this action",
+      };
+    }
 
-    return result;
-  } catch (error) {
-    console.log("Error", error);
+    if (result.success === false) {
+      return {
+        type: "error",
+        message: result.message,
+      };
+    }
+
+    return {
+      type: "success",
+      message: result.message,
+      data: result.data,
+    };
+  } catch (error: any) {
+    console.log("error", error);
+    return {
+      type: "error",
+      message: "Database Error: Failed to login.",
+    };
   }
 }
 
-export async function verifyEmail(formData: FormData) {}
+export async function verifyEmail(formData: FormData) { }

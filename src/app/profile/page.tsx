@@ -1,23 +1,58 @@
 "use client";
 
 import { useEffect } from "react";
+import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
+import { useFormState } from "react-dom";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
-import { getCurrentUser, resendEmailVerification } from "@/app/actions";
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer"
+import { SubmitButton } from "@/components/submit-button";
+
+
+
+import { getCurrentUser, resendEmailVerification, changeAvatar } from "@/app/actions";
 import { useCurrentUserContext } from "@/components/UserContext";
+
+const initialState = {
+  message: "",
+  errors: null,
+};
+
 
 function Loading() {
   return <h2 className="text-center">🌀 Loading...</h2>;
 }
 
 export default function ProfilePage() {
+  const [isOpen, setIsOpen] = useState(false);
   const { currentUser, setCurrentUser } = useCurrentUserContext();
   const router = useRouter();
+  const [state, formAction] = useFormState<any>(changeAvatar as any, initialState);
+
 
   useEffect(() => {
+
+    if (state.type === "success") {
+      toast.success(state.message);
+      setCurrentUser(state.data);
+      setIsOpen(false);
+    } else if (state.type === "error") {
+      toast.error(state.message);
+    }
+
     const fetchUser = async () => {
       if (currentUser) {
         return;
@@ -33,7 +68,7 @@ export default function ProfilePage() {
       }
     };
     fetchUser();
-  }, [setCurrentUser]);
+  }, [state, setCurrentUser]);
 
   if (!currentUser) {
     return <Loading />;
@@ -49,10 +84,8 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-8 p-8 bg-white rounded-lg shadow-lg">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-semibold text-gray-800">User Profile</h2>
-      </div>
+    <div className="max-w-md mx-auto mt-8 p-8 bg-white flex flex-col items-center justify-between gap-6 rounded-lg shadow-lg">
+      <h2 className="text-xl font-semibold text-gray-800">User Profile</h2>
       {/* display message that user have to verify email address */}
       <p className="text-gray-900">
         {currentUser.isEmailVerified
@@ -82,6 +115,29 @@ export default function ProfilePage() {
           Change Password
         </Button>
       </Link>
+      <Drawer open={isOpen}>
+        <DrawerTrigger asChild>
+          <Button variant="outline" onClick={() => setIsOpen(true)}>Change Avatar</Button>
+        </DrawerTrigger>
+        <DrawerContent>
+          <form action={formAction}>
+            <DrawerHeader>
+              <div className="grid gap-2">
+                <Label htmlFor="avatar">Avatar</Label>
+                <Input id="avatar" name="avatar" type="file" />
+                {state?.errors?.email && (
+                <span id="email-error" className="text-red-600 text-sm">
+                  {state.errors.email.join(",")}
+                </span>
+              )}
+              </div>
+            </DrawerHeader>
+            <DrawerFooter>
+              <SubmitButton name="Submit" />
+            </DrawerFooter>
+          </form>
+        </DrawerContent>
+      </Drawer>
     </div>
   );
 }
