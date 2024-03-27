@@ -198,7 +198,7 @@ export async function getCurrentUser() {
     console.log("error", error);
     return {
       type: "error",
-      message: "Database Error: Failed to login.",
+      message: "Database Error: Failed to get user details.",
     };
   }
 }
@@ -358,7 +358,7 @@ export async function changePassword(prevState: any, formData: FormData) {
 }
 
 export async function changeAvatar(prevState: any, formData: FormData) {
-  const avatar = formData.get("avatar");
+  const avatar = formData.get("avatar") as File
   const cookieStore = cookies();
   const accessToken = cookieStore.get("accessToken");
   const refreshToken = cookieStore.get("refreshToken");
@@ -376,7 +376,22 @@ export async function changeAvatar(prevState: any, formData: FormData) {
       message: "Please select an avatar",
     };
   }
-  console.log("avatar", avatar)
+
+  // Only images are allowed
+  if (!avatar.type.includes("image")) {
+    return {
+      type: "error",
+      message: "Only images are allowed",
+    };
+  }
+
+  // make sure file is less than 2MB
+  if (avatar.size > 2 * 1024 * 1024) {
+    return {
+      type: "error",
+      message: "File size must be less than 2MB",
+    };
+  }
 
   try {
     const response = await fetch(
@@ -415,7 +430,7 @@ export async function changeAvatar(prevState: any, formData: FormData) {
     console.log("error", error);
     return {
       type: "error",
-      message: "Database Error: Failed to login.",
+      message: "Database Error: Failed to change avatar.",
     };
   }
 }

@@ -124,7 +124,7 @@ export default function ProfilePage() {
             <DrawerHeader>
               <div className="grid gap-2">
                 <Label htmlFor="avatar">Avatar</Label>
-                <Input id="avatar" name="avatar" type="file" />
+                <Input id="avatar" name="avatar" type="file" required />
                 {state?.errors?.email && (
                 <span id="email-error" className="text-red-600 text-sm">
                   {state.errors.email.join(",")}
