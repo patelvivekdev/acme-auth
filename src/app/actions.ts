@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { z } from "zod";
 
-// define responce type
+//  Responce type
 type Response = {
   statusCode: number;
   data: any;
@@ -12,6 +12,7 @@ type Response = {
   success: boolean;
 };
 
+// =============================== Register ===============================
 const registerSchema = z.object({
   username: z.string().min(3, { message: "Must be 3 or more characters long" }),
   email: z.string().email("Please enter valid message").min(5),
@@ -70,6 +71,7 @@ export async function register(prevState: any, formData: FormData) {
   }
 }
 
+// =============================== Login ===============================
 const loginSchema = z.object({
   email: z.string().email("Please enter valid email"),
   password: z.string(),
@@ -139,6 +141,7 @@ export async function login(prevState: any, formData: FormData) {
   }
 }
 
+// =============================== Logout ===============================
 export async function logout() {
   try {
     cookies().delete("accessToken");
@@ -148,7 +151,7 @@ export async function logout() {
   }
 }
 
-// Fetch data from API
+// =============================== Get Current User ===============================
 export async function getCurrentUser() {
   const cookieStore = cookies();
   const accessToken = cookieStore.get("accessToken");
@@ -203,6 +206,7 @@ export async function getCurrentUser() {
   }
 }
 
+// =============================== Forget Password ===============================
 export async function forgetPassword(formData: FormData) {
   try {
     const email = formData.get("email");
@@ -228,6 +232,7 @@ export async function forgetPassword(formData: FormData) {
   }
 }
 
+// =============================== Reset Password ===============================
 export async function resendEmailVerification() {
   const cookieStore = cookies();
   const accessToken = cookieStore.get("accessToken");
@@ -283,6 +288,7 @@ export async function resendEmailVerification() {
   }
 }
 
+// =============================== Change Password ===============================
 const changePasswordSchema = z.object({
   oldPassword: z.string(),
   newPassword: z
@@ -357,6 +363,7 @@ export async function changePassword(prevState: any, formData: FormData) {
   redirect("/profile");
 }
 
+// =============================== Change Avatar ===============================
 export async function changeAvatar(prevState: any, formData: FormData) {
   const avatar = formData.get("avatar") as File
   const cookieStore = cookies();
@@ -435,4 +442,5 @@ export async function changeAvatar(prevState: any, formData: FormData) {
   }
 }
 
+// =============================== Verify Email ===============================
 export async function verifyEmail(formData: FormData) { }
